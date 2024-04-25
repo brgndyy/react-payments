@@ -8,7 +8,7 @@ import ErrorPage from './pages/error/ErrorPage';
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: '/react-payments/dist',
     element: <App />,
     errorElement: <ErrorPage />,
   },
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
 
-  { path: '/react-payments/dist/*', element: <NotFoundPage /> },
+  { path: '*', element: <NotFoundPage /> },
 ]);
 
 createRoot(document.getElementById('root')!).render(
