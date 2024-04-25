@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
 
-  { path: '*', element: <NotFoundPage /> },
+  { path: '/react-payments/dist/*', element: <NotFoundPage /> },
 ]);
 
 createRoot(document.getElementById('root')!).render(
