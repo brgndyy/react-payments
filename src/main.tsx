@@ -13,7 +13,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: '/confirm',
+    path: '/react-payments/dist//confirm',
     element: <ConfirmPage />,
     errorElement: <ErrorPage />,
   },
