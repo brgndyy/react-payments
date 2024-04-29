@@ -1,47 +1,43 @@
-import INITIAL_CARD_ISSUER_INFO from '../constants/initialCardIssuerInfo';
-import { useState, RefObject, useEffect, useRef } from 'react';
+import All_CARD_ISSUER_INFO from '../constants/allCardIssuerInfo';
+import { useState, RefObject } from 'react';
+import { AllCardIssuer, CardIssuerBackgroundColor } from '@/types';
 
 type UseCardIssuerProps = {
   nextStepHandler: () => void;
-  nextRef: RefObject<HTMLInputElement>;
-  isValidCurrentStep: boolean;
+  nextRef?: RefObject<HTMLInputElement>;
+  isActiveCurrentStep: boolean;
 };
 
-const useCardIssuer = ({ nextStepHandler, nextRef, isValidCurrentStep }: UseCardIssuerProps) => {
-  const [cardIssuer, setCardIssuer] = useState('');
-  const [backgroundColor, setBackgroundColor] = useState('');
-  const [isCompleted, setIsCompleted] = useState(false);
-  const ref = useRef<HTMLSelectElement>(null);
+type CardIssuerState = {
+  cardIssuer: AllCardIssuer;
+  backgroundColor: CardIssuerBackgroundColor;
+};
+
+const useCardIssuer = ({ nextStepHandler, isActiveCurrentStep }: UseCardIssuerProps) => {
+  const [cardIssuer, setCardIssuer] = useState<CardIssuerState>({
+    cardIssuer: '',
+    backgroundColor: '',
+  });
 
   const handleCardIssuer = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setIsCompleted(false);
     const targetValue = e.target.value;
-    const foundCardIssuer = INITIAL_CARD_ISSUER_INFO.find(
+    const foundCardIssuer = All_CARD_ISSUER_INFO.find(
       (cardIssuer) => cardIssuer.value === targetValue,
     );
 
     if (foundCardIssuer) {
-      setCardIssuer(foundCardIssuer.issuer);
-      setBackgroundColor(foundCardIssuer.backgroundColor);
+      setCardIssuer({
+        cardIssuer: targetValue as AllCardIssuer,
+        backgroundColor: foundCardIssuer.backgroundColor,
+      });
 
-      if (!isCompleted && isValidCurrentStep) {
+      if (isActiveCurrentStep) {
         nextStepHandler();
       }
-
-      setIsCompleted(true);
     }
   };
 
-  useEffect(() => {
-    if (isCompleted && ref) {
-      ref.current?.blur();
-    }
-    if (isCompleted && nextRef) {
-      nextRef.current?.focus();
-    }
-  }, [isCompleted]);
-
-  return { backgroundColor, handleCardIssuer, ref, cardIssuer };
+  return { handleCardIssuer, cardIssuer };
 };
 
 export default useCardIssuer;

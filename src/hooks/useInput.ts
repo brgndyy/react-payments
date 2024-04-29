@@ -8,17 +8,17 @@ type ValidateFn = {
 type UseInputProps = {
   validators: ValidateFn[];
   nextRef?: RefObject<HTMLInputElement>;
-  nextStepHandler?: () => void;
-  isValidCurrentStep: boolean;
+  onComplete?: () => void;
+  isActiveCurrentStep: boolean;
   maxLength: number;
 };
 
 const useInput = ({
   validators,
   nextRef,
-  nextStepHandler,
+  onComplete,
   maxLength,
-  isValidCurrentStep,
+  isActiveCurrentStep,
 }: UseInputProps) => {
   const [inputValue, setInputValue] = useState('');
   const [isError, setIsError] = useState(false);
@@ -47,25 +47,20 @@ const useInput = ({
 
     if (inputValue.length === maxLength) {
       setIsCompleted(true);
-      if (nextStepHandler && isValidCurrentStep) {
-        nextStepHandler();
+      if (onComplete && isActiveCurrentStep) {
+        onComplete();
       }
     } else {
       setIsCompleted(false);
     }
   };
 
-  const onEnter = (e: React.KeyboardEvent) => {
+  const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      if (
-        !isCompleted &&
-        nextStepHandler &&
-        !validate.isEmptyValue(inputValue) &&
-        isValidCurrentStep
-      ) {
-        nextStepHandler();
-        setIsCompleted(true);
+      if (!isCompleted && onComplete && !validate.isEmptyValue(inputValue) && isActiveCurrentStep) {
+        onComplete();
       }
+      setIsCompleted(true);
     }
   };
 
@@ -77,20 +72,15 @@ const useInput = ({
       setIsError(true);
       return;
     }
-    if (
-      !isCompleted &&
-      nextStepHandler &&
-      isValidCurrentStep &&
-      !validate.isEmptyValue(inputValue)
-    ) {
-      nextStepHandler();
+    if (!isCompleted && onComplete && isActiveCurrentStep && !validate.isEmptyValue(inputValue)) {
+      onComplete();
     }
     setIsCompleted(true);
   };
 
   useEffect(() => {
-    if (isCompleted && ref && nextStepHandler && isValidCurrentStep) {
-      nextStepHandler();
+    if (isCompleted && ref && onComplete && isActiveCurrentStep) {
+      onComplete();
       ref.current?.blur();
     }
     if (isCompleted && nextRef) {
@@ -98,7 +88,7 @@ const useInput = ({
     }
   }, [isCompleted]);
 
-  return { inputValue, onChange, isError, onEnter, ref, onBlur };
+  return { inputValue, onChange, isError, onKeyDown, ref, onBlur };
 };
 
 export default useInput;

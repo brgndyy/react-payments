@@ -6,9 +6,15 @@ import { CARD_ISSUER } from '@/constants/cardSection';
 import { SelectHTMLAttributes, useCallback } from 'react';
 import INITIAL_CARD_ISSUER_INFO from '@/constants/allCardIssuerInfo';
 
+<<<<<<< HEAD
 interface RegisterCardIssuerProps extends SelectHTMLAttributes<HTMLSelectElement> {}
 
 const CardIssuerInputSection = ({ onChange }: RegisterCardIssuerProps) => {
+=======
+interface Props extends SelectHTMLAttributes<HTMLSelectElement> {}
+
+const CardIssuerInputSection = ({ onChange }: Props) => {
+>>>>>>> step2
   const cardIssuerRef = useCallback((node: HTMLInputElement | null) => {
     node?.focus();
   }, []);
